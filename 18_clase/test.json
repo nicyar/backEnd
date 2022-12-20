@@ -1,0 +1,10 @@
+{
+    "storage":{
+        "dbPath":"ruta/nicyar/development/mongodb/data"
+    },
+    "systemLog":{
+        "destination":"file",
+        "path":"user/nicyar/development/mongodb/logs/mongo.log",
+        "logAppend":"true"
+    }
+ }//donde tengo mongo basicamente es solamente una forma para levantar el servidor

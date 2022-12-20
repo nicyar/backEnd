@@ -1,0 +1,32 @@
+{
+   {
+    "title": "papel",
+    "price": 19,
+    "id": 1
+  },
+   {
+    "title": "escuadra",
+    "price": 190,
+    "id": 2
+  },
+ {
+    "title": "regla",
+    "price": 199,
+    "id": 3
+  },
+  {
+    "title": "hojasss",
+    "price": 1900,
+    "id": 4
+  },
+   {
+    "title": "lapicera",
+    "price": 1900,
+    "id": 5
+  },
+   {
+    "title": "lapicera",
+    "price": 1900,
+    "id": 6
+  }
+}

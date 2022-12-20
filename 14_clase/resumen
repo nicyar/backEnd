@@ -1,0 +1,16 @@
+npx webpack para ejecutarlo o modificar nuestro script 
+con el 
+"build":"webpack ./a1.js ./a2.js ./a3.js",
+"start" "nombre del archivo"
+
+
+luego ponemos el main en dist/main
+
+/*     "build":"webpack ./a1.js ./a2.js ./a3.js", */
+/*     "start": "node dist/main.js" *
+
+
+los modos ponemos 
+build-development 
+    "webpack ./a1.js ./a2.js ./a3.js --mode=production "
+                                            development

@@ -1,0 +1,4 @@
+estoy entre ejs y handlebars ambos me parecen los mas mejorcitos ejs es mas facil de usar quizas,
+pero handlebars tiene mas funcionalidades que a la larga pueden ser utilis.
+en ambos se pueden insertar varios partials con facilidad(mas en ejs) eso es lo que mas me gusta.
+asi voy a usar el que este mas requerido hoy en dia

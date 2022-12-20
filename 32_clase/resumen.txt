@@ -1,0 +1,245 @@
+artillery sirve para hacer pruebas de estres que verifican que un sistema funciona como se esperaba,pruebas funcionales continuas  
+
+lo instalamos de forma global npm install -g artillery
+
+con esta dependencia tenes la funciones isPrime que lo que hace es recibir un numero como parametro y retornar 
+true si el numero es primo y false  si no lo es
+y realizamos el test de carga sobre la funcion de la ruta get
+
+la funcion isPrime es esta
+
+function isPrime(num){
+	if ([2,3].includes(num)) return true;
+	else if ([2,3]some(n => num%n == 0)) return false;
+	else{
+		let i =5, w=2;
+		while ((i**2) <=num){
+			if(num%i==0)return false
+			i +=w
+			w=6-w
+		}
+	}
+	return true
+}
+
+ahora para utilizarlos vamos a prender el servidor en modo fork con node
+luego abrimos la terminal en el directorio del proyecto y ponemos el comando:
+artillery quick --count 50 -n 40 http://localhost:8081?max=100000 > result fork.txt
+para ver este archivo tenemos que apagar el servidor 
+una vez finalizado hacemos lo mismo con el servidor de cluster
+
+en la query seteamos ese max para calcular numeros primos hasta el 10000
+
+y tenemos que fijarnos mean response/sec: 361.66
+			    y la median:70
+
+
+PROFILING 
+Es el analisis del rendimineto
+este se realiza averiguando el tiempo dedicado a la aejecucion de diferentes partes del programa para detectar los puntos
+problematicos y las areas donde sea posible llevar a cabo una optimizacion del rendimiento (velocidad y consumo)
+
+este puede proporcionar un resumen estadistico o la taza de ejecucion
+
+esto tiene una herramienta en los navegadores modernos un built-in profiler integrado en devTools que registra toda la informacion 
+sobre las funciones y cuanto tiempo lleva ejecutarlas en un archivo de registro
+luego el navegador analiza este archivo de log, brindandonos informacion legible sobre lo que esta sucediendo, para que podamos
+entenderlo y encontrar los cuellos de botella 
+node tambien lo tiene pero simplemente recopila toda la indormacion de estos archivos logs
+por eso necesitamos una herramienta que la ayude como curl que es de linea de comandos y libreria para transferir datos con url
+Se usa para transferir datos (es muy utilizada en todos los diapositivos )
+y es el motor de transferencia de internet para miles de aplicaciones de sofware en mas de diex millones de aplicaciones
+
+para usarlo debemos instalarlo desde https://curl.se/download.html
+luego lo descombrimimos y en la carpeta bin encontramos el archivo de instalacion .exe llamado curl.exe 
+(que debemos ejecurlo como administrador)
+luego ya podemos usar la linea de comandos por consola
+
+una vez que tengamos el servidor (que almacene un ,usuario lo muestre y encrypte la contraseña)
+aca el codigo seria:
+
+const express = require("express");
+const crypto = require("crypto");
+
+const app = express();
+
+const users = {}
+
+app.use(express.static('public'))
+
+
+const PORT = parseInt(process.argv[2]) || 8080;
+const server = app.listen(PORT, () => {
+  console.log(`Servidor escuchando en el puerto ${PORT}`);
+});
+server.on("error", (error) => console.log(`Error en servidor: ${error}`));
+
+
+app.get("/getUsers", (req, res) => {
+  res.json({ users })
+})
+
+app.get("/newUser", (req, res) => {
+  let username = req.query.username || "";
+  const password = req.query.password || "";
+
+  username = username.replace(/[!@#$%^&*]/g, "");
+
+  if (!username || !password || users[username]) {
+    return res.sendStatus(400);
+  }
+
+  const salt = crypto.randomBytes(128).toString("base64");
+  const hash = crypto.pbkdf2Sync(password, salt, 10000, 512, "sha512");
+
+  users[username] = { salt, hash };
+
+  res.sendStatus(200);
+});
+
+
+AHORA EL NODE BUILT-IN PROFILER:AUTH-BLOQ
+app.get("/auth-bloq", (req, res) => {
+  let username = req.query.username || "";
+  const password = req.query.password || "";
+
+  username = username.replace(/[!@#$%^&*]/g, "");
+
+  if (!username || !password || !users[username]) {
+    process.exit(1)
+    // return res.sendStatus(400);
+  }
+
+  const { salt, hash } = users[username];
+  const encryptHash = crypto.pbkdf2Sync(password, salt, 10000, 512, "sha512");
+
+  if (crypto.timingSafeEqual(hash, encryptHash)) {
+    res.sendStatus(200);
+  } else {
+    process.exit(1)
+    // res.sendStatus(401);
+  }
+});
+
+
+AHORA EL AUTO-NOBLOQ
+
+app.get("/auth-nobloq", (req, res) => {
+  let username = req.query.username || "";
+  const password = req.query.password || "";
+  username = username.replace(/[!@#$%^&*]/g, "");
+
+  if (!username || !password || !users[username]) {
+    process.exit(1)
+    // return res.sendStatus(400);
+  }
+  crypto.pbkdf2(password, users[username].salt, 10000, 512, 'sha512', (err, hash) => {
+    if (users[username].hash.toString() === hash.toString()) {
+      res.sendStatus(200);
+    } else {
+      process.exit(1)
+      //res.sendStatus(401);
+    }
+  });
+});
+
+
+creado vamos a ejecutarlo con node --prof server.js en modo profiler
+ahora abrimos otra terminal en la carpeta del proyecto
+
+1_ con esto creamos un nuevo usuario
+curl -X GET "http://localhost:8080/newUser?usernmae=marian&password=qwerty123"
+
+2_ahora uso el test de cargaartillery quick --count 10 -n 50 "http://localhost:8080/auth-bloq?usernmae=marian&password=qwerty1233" > result_bloq.txt
+
+esto va a hacer un test de 10 request con 50 usuarios a la url especificada y se va a guardar en result_bloq.txt
+para ver este archivo debo salir del servidor
+
+con esto se crea tambien un archivo llamado isolate que esta incriptado perimero debemos nenombrarlo como bloq-v8.log y antes de decodificar
+hacemos lo mismo pero cuando la ruta es no bloqueante
+
+creamos nuevamente
+curl -X GET "http://localhost:8080/newUser?username=dani&password=qwerty123"
+
+ahora lo mandamos hacia la ruta no bloqueante
+artillery quick --count 10 -n 50 "http://localhost:8080/auth-nobloq?username=dani&password=qwerty123" > result_nobloq.txt
+
+ahora si pasamos a decodificarlos
+con : node --prof-process bloq-v8.log > result_prof-bloq.txt
+      node --prof-process nobloq-v8.log > result_prof-nobloq.txt
+
+ahi podemos ver que los archivos no bloqueantes sacan menos ticket
+
+
+NODE INSPECT 
+Una forma mas sencilla
+prendemos el servidor con: node --inspect server.js
+luego en el navegador chrome ponemos chrome://inspect vamos a devtools  abrimos el dev for node
+luego de que se abra la ventana vamos a profiler y le doy a start
+luego vuelvo a correr los comandos de test de carga artillery para los bloqueantes y los no bloqueantes
+una vez que termina ponemos el boton stop en el navegador y nos muestra la informacion de los archiovs antes visto
+si vamos a run a la derecha podemos ver los archivos bloqueantes si entramos se abre una pestaña que muestra cuanto tarda cada function 
+
+
+AUTOCANON Y X0
+
+auto es una dependencia similar a artillery
+0x es una dependencia que perfila y genera un gráfico de flama (flame graph) interactivo para un proceso Node en un solo comando.
+En este caso, vamos a hacer los test de carga por código
+usamos lo mismo que para el ejemplo interior
+
+instalamos las dependencias npm install autocannon --save npm install -g 0x
+
+antes de esto la configuracion del autocannon y el stream
+
+con el run ejecutamos el text ponemos run("ttp://localhost:8080/newUser?username=dani&password=qwerty123")
+
+con esto hacemos el grafico de flama 
+"scripts":{
+	"test":"node benchmark.js",
+	"start": "0x server.js"}
+
+ahora si prendemos el servidor 
+npm start
+
+luego en otra terminal: curl -X GET "http://localhost:8080/newUser?usernmae=marian&password=qwerty123"
+
+y ejecutamos npm test , cuando se apaga el servidor Esta contiene los resultados en archivo Isolate, similar a los visto y además un html con los diagramas de flama.
+Este archivo HTML lo podemos abrir en un navegador
+
+
+en el proceso bloquenate los procesos que mass tiempo ocupan son lo que estan horizontalmente
+cuanto mas arriba llegue el diagrama de flamas mas anidado esta dentro del stack de procesos
+Los procesos de más arriba son los que primero tienen que resolverse para dejar liberados los procesos de abajo. Es decir, los procesos de arriba son los que bloquean a los de abajo y son los que están en color más oscuro (“hot”).
+
+Esto es justamente porque es el test sobre el proceso bloqueante.
+La horizontalidad es la duración en el stack, entonces cuanto más largos sean, mayor duración tienen.
+
+
+
+	CLASE 31 PROFE
+artillery quick
+
+lo configuramos y luego le damos artillery quick 
+
+dentro del index
+
+	function isPrime(num){
+	if ([2,3].includes(num)) return true;
+	else if ([2,3]some(n => num%n == 0)) return false;
+	else{
+		let i =5, w=2;
+		while ((i**2) <=num){
+			if(num%i==0)return false
+			i +=w
+			w=6-w
+		}
+	}
+	return true
+}
+
+el comando es artillery quick --count 50 -n 40 "http://localhost:8081?max=100000" >result_fork.txt
+
+
+
+

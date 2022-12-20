@@ -1,0 +1,21 @@
+{
+  "name": "probandoconexion",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "firebase": "^9.13.0",
+    "firebase-admin": "^11.2.0",
+    "mongoose": "^6.7.1"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^7.6.0"
+  }
+}

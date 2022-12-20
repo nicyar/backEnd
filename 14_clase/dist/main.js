@@ -1,0 +1,1 @@
+setTimeout((()=>{console.log("webpack")}),1e3),setTimeout((()=>{console.log("is")}),2e3),setTimeout((()=>{console.log("awesome")}),3e3);

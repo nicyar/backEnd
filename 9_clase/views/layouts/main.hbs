@@ -1,0 +1,20 @@
+<h1>desde main hbs</h1>
+{{>partial}}
+
+{{#if mostrarProductos}}
+
+    {{#each products}}
+    <div>
+        
+         <h3>{{this.nombre}}</h3>
+          <img src={{this.image}} alt={{this.id}}>  {{!--  Puedo usar el this por que estoy iterando en el each --}}
+        
+        <h4>{{this.precio}}</h4>
+    </div>
+    
+    {{/each}}
+
+{{/if}}{{!-- asi se abren y se cierran los condicionales --}}
+{{!-- {{>partial}}{{!-- >lo que vamos a poner aqui adentro es un html una plantilla partial --}}
+{{!-- 
+ --}} --}}

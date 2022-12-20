@@ -1,0 +1,36 @@
+cliente de aplicacion en node js
+se encargan de un script especifico y tiene otro para revertir este en caso de error
+las migraciones:
+para poder volver para atras
+
+
+
+config del db npx knex init para no instalarlo globalmente
+
+
+
+
+module.exports.up= async function (knex){
+    const exist = await knex.schema.hasTable('users')
+    if(!exists){
+    return knex.schema.createTable('users',(table)=>{
+    table.increments('id');
+    table.string('name',255).notNUllable().defaultTo('fulano');
+    table.string('lastname');
+    table.integer('age');
+    table.string('dni').notNullable().unique()
+    }) //recibe dos parametros
+    }
+}
+
+module.exports.down = async functino (knex){
+    //aca tenemos que tener una tabla para liminarla 
+    const exist = await knex.schema.hasTable('users');
+    if(exist){
+        
+    }
+}
+
+/*  comando until para listar todas mis migraciones */en list de dentro del package
+
+si quiero insertar multiples usuarios primero hago un arreglo y luego hago el insert

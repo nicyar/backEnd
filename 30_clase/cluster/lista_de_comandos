@@ -1,0 +1,16 @@
+para la primera parte:
+para iniciar el sevidor pasando dos parametros se los pasamos por consola:
+    nodemon index.js 8081 (FORK o CLUSTER) 
+con forever:
+forever start index.js [args]
+aca con forever no se como tomar en el index los parametros pero si se que los args se pasan luego del index
+
+con pm2:
+pm2 start index.js --name="cluster-server" -- 8081 FORK
+pm2 start index.js --name="cluster-server1" -- 8082 CLUSTER 
+pm2 start index.js --name="cluster-server2" -- 8083 CLUSTER 
+
+si quiero que el servidor le haga una peticion a cada una y vuelva a empezar no le agrego weight al final en la configuracion 
+si quisiera que le hago mas consultas a un server que otro se lo agrego y la cantidad que quiero que le haga 
+
+lo que no pude hacer es redirigir las consultas como pide al final 

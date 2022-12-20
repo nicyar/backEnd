@@ -1,0 +1,63 @@
+const preguntas = ['Cual es tu nombre?', 'Cual es tu apellido?'];
+const respuestas = [];
+
+const pregunta = (i) => {
+  process.stdout.write(`\n ${preguntas[i]}`);
+  process.stdout.write(`: `);
+};
+
+process.stdin.on('data', (data) => {
+  // process.stdout.write(`\n${data.toString().trim()}\n`);
+  respuestas.push(data.toString().trim());
+  if (respuestas.length < preguntas.length) {
+    pregunta(respuestas.length);
+  } else {
+    process.exit();
+  }
+})
+
+
+const {spawn} = require('child_process');
+
+const childProcess = spawn('node', ['numeros']);
+
+childProcess.stdout.on('data', (data) => {
+  console.log('PowerBall: ', data.toString().trim());
+});
+
+process.stdin.on('data', (data) => {
+  console.log('Buena suerte...');
+  process.exit();
+});
+const interval = setInterval(() => {
+  let numeros = "";
+  for (let i = 0; i < 7; i++) {
+    numeros += Math.floor((Math.random()*100)+1)+' ';
+  }
+  console.log(numeros);
+},1000)
+
+
+FORK-------
+const express = require('express');
+
+let visitas = 0;
+const calculo = () => {
+  let sum = 0;
+  for (let i=0; i<6e9; i++) {
+    sum += i;
+  }
+  return sum;
+};
+
+const app = express();
+
+app.get('/calcular', (req, res) => {
+  res.send(calculo());
+});
+
+app.get('/', (req, res) => {
+  res.send(`No. Visitas => ${++visitas}`);
+});
+
+app.listen(8080);
