@@ -1,5 +1,5 @@
 const express = require("express");
-const path = require('path')
+const path = require('path');
 const PORT = 8080 || process.env.PORT;
 const { engine } = require("express-handlebars");
 const app = express();
@@ -7,9 +7,14 @@ const { faker } = require('@faker-js/faker');
 const { commerce, image } = faker
 const Users = require("./apiUsers");
 // import { db, msgsModel} from "./dbsConfig.js";
-const {DB , usersModel} = require('./config/usersConfig')
+const {DB , usersModel} = require('./config/usersConfig');
+const passport = require('passport');
 
-const Api =  new Users( DB, usersModel);
+
+
+
+
+const Api =  new Users(DB,usersModel);
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -31,7 +36,9 @@ app.use('/', express.static(__dirname + '/public'));
 const server = app.listen(PORT,()=>{console.log(`server is runing in port ${PORT}`)})
 
 app.post('/users',(req,res)=>{
-    const users = req.body;
-    console.log(Api.save(users));
+    const {username,password} = req.body;
+    console.log(username)
+    const newUser ={username,password}
+    console.log(Api.save(newUser));
     res.redirect('/products')
 })
