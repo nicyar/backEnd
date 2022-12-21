@@ -46,7 +46,7 @@ app.get('/api/products-test',(req,res)=>{
         hayProductos:data.length
     });
 })
-app.post('/mensajes',()=>{
+app.post('/mensajes',(req,res)=>{
     const mensajes = req.body;
     console.log(Api.save(mensajes))
     res.redirect('/')
