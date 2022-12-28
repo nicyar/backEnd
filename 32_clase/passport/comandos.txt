@@ -1,0 +1,2 @@
+pm2 
+inicia automaticamente en fork con el comando: pm2 start index.js
